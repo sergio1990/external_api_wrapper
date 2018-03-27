@@ -1,6 +1,20 @@
 require 'external_api_wrapper/version'
 
 module ExternalApiWrapper
+  autoload :ActsAsCallable, 'external_api_wrapper/acts_as_callable'
+  autoload :BaseEndpoint, 'external_api_wrapper/base_endpoint'
+  autoload :Config, 'external_api_wrapper/config'
+  autoload :Configurable, 'external_api_wrapper/configurable'
+
+  module Data
+    autoload :EndpointParams, 'external_api_wrapper/data/endpoint_params'
+  end
+
+  module Http
+    autoload :UriBuilder, 'external_api_wrapper/http/uri_builder'
+    autoload :Requester, 'external_api_wrapper/http/requester'
+  end
+
   InvalidEndpointCodeError = Class.new(StandardError)
   InvalidEndpointClassError = Class.new(StandardError)
 
@@ -35,7 +49,7 @@ module ExternalApiWrapper
     raise InvalidEndpointCodeError, "The endpoint code `#{code}` is invalid! It should be a Symbol!"
   end
 
-  def validate_endpoint_process_class!(klass)
+  def validate_endpoint_processor_class!(klass)
     return if klass.ancestors.include?(ExternalApiWrapper::BaseEndpoint)
     raise InvalidEndpointClassError,
       'The endpoint class should be derived from the `ExternalApiWrapper::BaseEndpoint` class!'

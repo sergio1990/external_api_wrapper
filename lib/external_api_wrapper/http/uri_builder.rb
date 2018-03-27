@@ -1,4 +1,5 @@
 require 'addressable/template'
+require 'uri'
 
 module ExternalApiWrapper
   module Http
@@ -12,7 +13,7 @@ module ExternalApiWrapper
 
       def call
         uri = build_uri_with_expanded_params
-        uri.query = endpoint_params.query_params.to_query
+        uri.query = URI.encode_www_form(endpoint_params.query_params)
         uri
       end
 
