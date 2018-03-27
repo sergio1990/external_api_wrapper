@@ -2,6 +2,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/0ca18305c1383d977297/maintainability)](https://codeclimate.com/github/sergio1990/external_api_wrapper/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0ca18305c1383d977297/test_coverage)](https://codeclimate.com/github/sergio1990/external_api_wrapper/test_coverage)
+[![Build Status](https://travis-ci.org/sergio1990/external_api_wrapper.svg?branch=master)](https://travis-ci.org/sergio1990/external_api_wrapper)
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/external_api_wrapper`. To experiment with that code, run `bin/console` for an interactive prompt.
 
