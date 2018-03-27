@@ -1,4 +1,7 @@
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
-require "external_api_wrapper"
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'external_api_wrapper'
 
-require "minitest/autorun"
+require 'minitest/autorun'
+require 'minitest/reporters'
+
+Minitest::Reporters.use!
