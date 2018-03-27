@@ -3,4 +3,3 @@ module ExternalApiWrapper
     attr_accessor :base_url
   end
 end
-

@@ -1,6 +1,6 @@
 module ExternalApiWrapper
   module Configurable
-    REQUIRED_CONFIG_ATTRIBUTES = [:base_url, :base_url=]
+    REQUIRED_CONFIG_ATTRIBUTES = %i[base_url base_url=].freeze
 
     InvalidConfigClassError = Class.new(StandardError)
 
@@ -10,9 +10,10 @@ module ExternalApiWrapper
       _add_config_method(target_module)
     end
 
-    private
-
     class << self
+      private
+
+      # rubocop:disable Metrics/MethodLength
       def _add_module_attributes(target_module)
         class << target_module
           attr_accessor :config_class
@@ -20,12 +21,14 @@ module ExternalApiWrapper
           def config_class=(klass)
             REQUIRED_CONFIG_ATTRIBUTES.each do |attr_name|
               next if klass.instance_methods.include?(attr_name)
-              raise InvalidConfigClassError, "The config object should has required attribute `##{attr_name}!`"
+              raise InvalidConfigClassError,
+                "The config object should has required attribute `##{attr_name}!`"
             end
             @config_class = klass
-          end   
+          end
         end
       end
+      # rubocop:enable Metrics/MethodLength
 
       def _provide_attributes_defaults(target_module)
         target_module.config_class = ::ExternalApiWrapper::Config
@@ -34,7 +37,7 @@ module ExternalApiWrapper
       def _add_config_method(target_module)
         target_module.instance_eval do
           def config(&_block)
-            @config ||= self.config_class.new
+            @config ||= config_class.new
             block_given? ? yield(@config) : @config
           end
         end

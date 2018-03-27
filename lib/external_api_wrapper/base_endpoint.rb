@@ -20,7 +20,7 @@ module ExternalApiWrapper
       raise NotImplementedError
     end
 
-    def process_raw_params(raw_params)
+    def process_raw_params(_raw_params)
       raise NotImplementedError
     end
 
