@@ -8,3 +8,8 @@ Rake::TestTask.new(:test) do |t|
 end
 
 task default: :test
+
+task :rubocop do
+  `rubocop --format html -o rubocop.html`
+  `open rubocop.html`
+end
