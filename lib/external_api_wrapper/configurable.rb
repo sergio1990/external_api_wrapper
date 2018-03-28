@@ -2,7 +2,7 @@ module ExternalApiWrapper
   module Configurable
     REQUIRED_CONFIG_ATTRIBUTES = %i[base_url base_url=].freeze
 
-    InvalidConfigClassError = Class.new(StandardError)
+    InvalidConfigClassError = Class.new(BaseError)
 
     def self.extended(target_module)
       _add_module_attributes(target_module)

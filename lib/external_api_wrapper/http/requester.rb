@@ -1,5 +1,4 @@
 require 'net/https'
-require 'json'
 
 module ExternalApiWrapper
   module Http
@@ -13,8 +12,8 @@ module ExternalApiWrapper
 
       def call
         http = build_http
-        raw_response = do_request(http)
-        jsonify_response(raw_response)
+        response = do_request(http)
+        ExternalApiWrapper::Http::Response.new(response)
       end
 
       private
@@ -28,12 +27,7 @@ module ExternalApiWrapper
       def do_request(http)
         request = Net::HTTP::Get.new(uri.request_uri)
         request = apply_request_headers(request)
-        response = http.request(request)
-        response.body
-      end
-
-      def jsonify_response(raw_response)
-        JSON.parse(raw_response, symbolize_names: true)
+        http.request(request)
       end
 
       def apply_ssl(http)

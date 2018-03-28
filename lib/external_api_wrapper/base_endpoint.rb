@@ -1,5 +1,5 @@
 module ExternalApiWrapper
-  InvalidEndpointParamsError = Class.new(StandardError)
+  InvalidEndpointParamsError = Class.new(BaseError)
 
   class BaseEndpoint
     include ActsAsCallable
@@ -10,8 +10,8 @@ module ExternalApiWrapper
     end
 
     def call
-      raw_response = do_http_request
-      parse_response(raw_response)
+      http_response = do_http_request
+      parse_response(http_response)
     end
 
     protected
@@ -49,8 +49,8 @@ module ExternalApiWrapper
       ExternalApiWrapper::Http::Requester.call(uri: uri, headers: params.headers)
     end
 
-    def parse_response(raw_response)
-      response_parser.call(raw_response)
+    def parse_response(http_response)
+      response_parser.call(http_response)
     end
 
     def build_uri

@@ -1,6 +1,7 @@
 require 'external_api_wrapper/version'
 
 module ExternalApiWrapper
+  autoload :BaseError, 'external_api_wrapper/base_error'
   autoload :ActsAsCallable, 'external_api_wrapper/acts_as_callable'
   autoload :BaseEndpoint, 'external_api_wrapper/base_endpoint'
   autoload :Config, 'external_api_wrapper/config'
@@ -13,6 +14,7 @@ module ExternalApiWrapper
   module Http
     autoload :UriBuilder, 'external_api_wrapper/http/uri_builder'
     autoload :Requester, 'external_api_wrapper/http/requester'
+    autoload :Response, 'external_api_wrapper/http/response'
   end
 
   InvalidEndpointCodeError = Class.new(StandardError)
