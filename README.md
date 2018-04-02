@@ -37,6 +37,98 @@ Or install it yourself as:
 
 To use this library a plenty steps should be passed, but they are pretty simple and straightforward, I hope 😋 I am going to describe all of them in an order below.
 
+### 1. Decide which module will be like a facade and provide a configuration
+
+Let's imagine, that `SomeApi` module will be an API facade. So, to allow that, you have to extend it by `ExternalApiWrapper` module like the following:
+
+```ruby
+module SomeApi
+  extend ::ExternalApiWrapper
+end
+```
+
+Then, you need to provide a general configuration. It's very simple and requires only a base URL:
+
+```ruby
+::SomeApi.config do |api_config|
+  api_config.base_url = ENV['SOME_API_BASE_URL']
+end
+```
+
+### 2. Register an endpoint
+
+After defining the facade module you have to setup one or more endpoints. For that, you should use `register_endpoint` class method, which expects the following information to be passed:
+
+- endpoint code
+- endpoint processing class
+
+For example:
+
+```ruby
+module SomeApi
+  extend ::ExternalApiWrapper
+  
+  register_endpoint :get_info, klass: SomeApi::GetInfo::Endpoint
+end
+```
+
+### 3. Define endpoint processing class
+
+The whole processing work is hidden under the `ExternalApiWrapper::BaseEndpoint` abstract class, but you have to setup parts, which are uniq for each endpoint:
+
+- required parameters list
+- map an income hash with parameters into the parameter object, which will be used in the lower layers
+- an endpoint's URL path. As you remember, the base URL is set separately
+- an endpoint's response parser class - will map the general response hash into the value objects, for example. But nothing resist you to use just response hash on the high levels, but this approach is not recommended.
+
+```ruby
+class SomeApi::GetInfo::Endpoint < ExternalApiWrapper::BaseEndpoint
+  protected
+
+  def required_params_keys
+    [:param1, :param2]
+  end
+
+  def process_raw_params(raw_params)
+    ExternalApiWrapper::Data::EndpointParams.new(
+      url_params: raw_params.slice(:param1),
+      query_params: raw_params.slice(:param2),
+      base_url: raw_params[:base_url]
+    )
+  end
+
+  def endpoint_path
+    '/rest/v1/get_info/{param1}'
+  end
+
+  def response_parser
+    ResponseParser
+  end
+end
+
+class SomeApi::GetInfo::ResponseParser
+  def initialize(http_response)
+    @http_response = http_response
+  end
+
+  def self.call(*opts, &block)
+    new(*opts).call(&block)
+  end
+
+  def call
+    # Parsing logic should be there...
+  end
+
+  private
+
+  attr_reader :http_response
+end
+```
+
+After all those steps you can reach the API endpoint by calling `SomeApi.get_info(param1: 'value1', param2: 'value2'). As you can notice, the argument list is just a hash.
+But internally, each parameter could be used differently. Actually, there are 2 main roles: URL parameters and query parameters. Regarding URL parameters, please, consider the `endpoint_path` method: there is a part `{param1}`.
+It looks like a placeholder! And it's true! Hence, during the call, that part will be automatically replaced by the value from the income parameter hash.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
